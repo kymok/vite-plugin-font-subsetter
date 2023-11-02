@@ -8,7 +8,7 @@ create a `vite.config.js` and import the plugin.
 
 ```js
 // vite.config.js
-import { fontSubsetter } from "rollup-plugin-font-subsetter";
+import { fontSubsetter } from "vite-plugin-font-subsetter";
 
 export default defineConfig({
   plugins: [
