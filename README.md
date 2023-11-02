@@ -19,7 +19,7 @@ export default defineConfig({
 
 ## How it works
 
-The plugin subsets `.woff2` font files for glyph set computed from `.htm/.html`, `.css`, `.js` files in resulting bundle. This plugin is using [subset-font](https://github.com/papandreou/subset-font) under the hood.
+The plugin subsets `.woff2` font files for character set computed from `.htm/.html`, `.css`, `.js` files in resulting bundle. This plugin is using [subset-font](https://github.com/papandreou/subset-font) under the hood.
 
 ### Limitations
 

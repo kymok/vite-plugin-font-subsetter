@@ -1,14 +1,15 @@
 {
   "name": "vite-plugin-font-subsetter",
   "version": "0.1.0",
-  "description": "",
+  "description": "A Vite plugin that subsets fonts at bundle time based on page contents.",
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "build": "tsc",
+    "prepare": "tsc"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Kaoru Yamaoka",
+  "license": "MIT",
   "dependencies": {
     "@types/subset-font": "^1.4.2",
     "rollup": "^4.2.0",

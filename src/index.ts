@@ -6,7 +6,7 @@ const IsAssetInfo = (info: AssetInfo | ChunkInfo): info is AssetInfo => {
   return info.type === 'asset'
 }
 
-const extractGlyphSet = (info: AssetInfo | ChunkInfo): Set<string> => {
+const extractCharacterSet = (info: AssetInfo | ChunkInfo): Set<string> => {
   if (IsAssetInfo(info)) {
     if (typeof (info.source) === 'string') {
       return new Set(info.source)
@@ -18,9 +18,18 @@ const extractGlyphSet = (info: AssetInfo | ChunkInfo): Set<string> => {
   return new Set(info.code)
 }
 
-async function generateBundle (
+type PluginOptions = {
+  verbose?: boolean,
+}
+
+const defaultPluginOptions: PluginOptions = {
+  verbose: false,
+}
+
+async function generateBundle(
   options: OutputOptions,
   bundle: { [fileName: string]: AssetInfo | ChunkInfo },
+  pluginOptions: PluginOptions
 ) {
   // list files
   const fontFiles = Object.keys(bundle).filter((fileName) => {
@@ -29,18 +38,22 @@ async function generateBundle (
   const sourceFiles = Object.keys(bundle).filter((fileName) => {
     return fileName.match(/\.(js|css|htm|html)$/)
   })
-  console.log("subsetting font")
-  console.log("subset target:", fontFiles)
-  console.log("subset based on:", sourceFiles)
-  
+  if (pluginOptions?.verbose) {
+    console.log("subsetting font")
+    console.log("subset target:", fontFiles)
+    console.log("subset based on:", sourceFiles)
+  }
+
   // compute glyph set
   const glyphSet = sourceFiles.map(
-    (fileName) => extractGlyphSet(bundle[fileName])
+    (fileName) => extractCharacterSet(bundle[fileName])
   ).reduce(
     (acc, set) => new Set([...acc, ...set]), new Set<string>()
   );
-  console.log("glyph set size:", glyphSet.size);
   const glyphSetString = Array.from(glyphSet).join('')
+  if (pluginOptions?.verbose) {
+    console.log("glyph set size:", glyphSet.size);
+  }
 
   // subset fonts
   for (const fileName of fontFiles) {
@@ -56,9 +69,13 @@ async function generateBundle (
   }
 }
 
-export function fontSubsetter() {
+export function fontSubsetter(options?: PluginOptions) {
+  const pluginOptions = { ...defaultPluginOptions, ...options }
   return {
     name: "font-subsetter",
-    generateBundle
+    generateBundle: (
+      options: OutputOptions,
+      bundle: { [fileName: string]: AssetInfo | ChunkInfo }
+    ) => generateBundle(options, bundle, pluginOptions)
   }
 }
